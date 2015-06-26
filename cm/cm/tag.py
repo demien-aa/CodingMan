@@ -42,7 +42,8 @@ class TagWorker(threading.Thread):
                         result = self.get_tag(aggregate_comment)
                         for tag, count in result.iteritems():
                             app_tags[app_id][tag] += count
-                    except:
+                    except Exception as e:
+                        print e
                         aggregate_comment = ''
                         current_app_id = app_id
                     aggregate_comment = ''
@@ -76,7 +77,6 @@ def chunks(l, n):
 if __name__ == '__main__':
     threading_cnt = 1 
     index_list = range(200, 8401, 200)
-    # index_list = [201]
     split_index_list = list(chunks(index_list, len(index_list)/threading_cnt))
     tag_workers = []
     for index_list in split_index_list:
