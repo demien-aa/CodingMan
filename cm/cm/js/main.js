@@ -696,7 +696,7 @@ function _appendSmallImgTag(elem,span, tagData, index) {
     //    imgSpan.appendChild(img);
     //}
     var subTitle = 'This is a tag for filter apps, total number is 123'
-    imgSpan.innerHTML = subTitle;
+    imgSpan.innerHTML = tagData.tagMessage;
     span.appendChild(imgSpan);
 }
 
@@ -717,7 +717,7 @@ function _setContent() {
 
         title.className = 'inner';
         title.innerHTML = tagData['tagName'];
-        _appendSmallImgTag(elem,title,tagData['imgs'],i);
+        _appendSmallImgTag(elem,title,tagData,i);
         elem.appendChild(title);
     });
     console.log("total tag elements num is : "+tagElems.length);

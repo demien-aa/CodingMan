@@ -106,13 +106,13 @@ DATABASES = {
         'HOST': DB_HOST,
         'PORT': DB_PORT,
     },
-    'default_p': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'cm',
-        'USER': 'aa',
-        'PASSWORD': '',
-        'HOST': '10.11.12.1',
-        'PORT': '5432',
-        'OPTIONS': {'autocommit': True},
-    },
+    # 'default_p': {
+    #     'ENGINE': 'django.db.backends.postgresql_psycopg2',
+    #     'NAME': 'cm',
+    #     'USER': 'aa',
+    #     'PASSWORD': '',
+    #     'HOST': '10.11.12.1',
+    #     'PORT': '5432',
+    #     'OPTIONS': {'autocommit': True},
+    # },
 }

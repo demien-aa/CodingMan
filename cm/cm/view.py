@@ -23,6 +23,7 @@ class HomeView(View):
                     imgs.append(imgObj)
                 tagObj = {
                     'tagName': 'Test Tag %d' % i,
+                    'tagMessage': 'Tag message',
                     'imgs': imgs
                 }
                 tags.append(tagObj)
