@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+PROJECT_NAME = 'cm'
 
 
 # Quick-start development settings - unsuitable for production
@@ -91,8 +92,13 @@ DB_OPTIONS = {'autocommit': True}
 DB_USER = 'root'
 DB_PORT = 3306
 
+STATIC_URL = 'localhost/'
+PROJECT_BASE_DIR = os.path.join(BASE_DIR, PROJECT_NAME)
+STATICFILES_JS_DIRS = os.path.join(PROJECT_BASE_DIR, 'js')
+STATICFILES_CSS_DIRS = os.path.join(PROJECT_BASE_DIR, 'css')
+
 DATABASES = {
-    'default_m': {
+    'default': {
         'ENGINE': DB_ENGINE,
         'NAME': 'cm',
         'USER': DB_USER,

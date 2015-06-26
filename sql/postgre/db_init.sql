@@ -20,7 +20,7 @@ tag_app_rel table
 CREATE TABLE tag_app_rel (
   id INTEGER NOT NULL,
   app_id INTEGER NOT NULL,
-  tag_id INTEGER NOT NULL,
+  tag VARCHAR(512) NOT NULL,
   times INTEGER NOT NULL,
 );
 
@@ -34,7 +34,7 @@ CREATE TABLE cm_tag (
   id INTEGER NOT NULL,
   app_id INTEGER NOT NULL,
   times INTEGER NOT NULL,
-  tag INTEGER NOT NULL,
+  tag VARCHAR(512) NOT NULL,
 );
 
 alter table cm_tag add CONSTRAINT cm_tag_pkey primary key (id);
