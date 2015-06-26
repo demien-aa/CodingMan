@@ -643,8 +643,14 @@ function _appendImg(elem, imgs) {
             left += 50;
             img.style.left = left + 'px';
             img.style.top = top + 'px';
-            img.src = imgs[imgIndex].src;
-            img.title = imgs[imgIndex].title;
+            if(imgIndex >= imgs.length)
+                imgIndex = 0;
+            try {
+                img.src = imgs[imgIndex].src;
+                img.title = imgs[imgIndex].title;
+            } catch (ex) {
+                return;
+            }
             console.log(imgs[imgIndex].src);
             imgIndex += 1;
             //if(j%2 === 0)
@@ -695,7 +701,7 @@ function _appendSmallImgTag(elem,span, tagData, index) {
 }
 
 function _setContent() {
-    var tagDatas = window.tagData;
+    var datas = window.datas;
 
     // 按面积，从大到小排列tag区块
     tagElems.sort(function(a, b) {
@@ -703,7 +709,7 @@ function _setContent() {
     });
 
     tagElems.forEach(function(elem, i) {
-        var tagData = tagDatas[i];
+        var tagData = datas[i];
         elem.innerHTML = '';
 
         _appendImg(elem,tagData['imgs']);
@@ -827,7 +833,7 @@ Array.prototype.forEach.call(buttons, function(button, index) {
 
         currentButton = button;
         currentIndex = index;
-        window.tagData = window.tagDatas[index];
+        window.datas = window.tagDatas[index];
     }
 
     button.onclick = function() {
@@ -838,7 +844,7 @@ Array.prototype.forEach.call(buttons, function(button, index) {
 
 function changeNav(button, index) {
         //if(window[tagDataNames[index]]) {
-        //    window.tagData = window[tagDataNames[index]];
+            window.datas = window.tagDatas[index];
         //    tagDataAutoLoader.regenerate();
         //}
 
