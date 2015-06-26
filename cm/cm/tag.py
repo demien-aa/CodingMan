@@ -6,6 +6,7 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "settings")
 from collections import defaultdict, OrderedDict
 from models import Tag
 from django.conf import settings
+from nltk.stem.lancaster import LancasterStemmer
 
 MY_ROOT = settings.ROOT + '/../../'
 
@@ -34,20 +35,18 @@ class TagWorker(threading.Thread):
                 index += 1
                 app_id, title, content = line.split('\t')
 
-
-
                 if current_app_id is None:
                     current_app_id = app_id
                 if app_id != current_app_id:
-                    current_app_id = app_id
                     try:
-                        tokens = self.tokenize(aggregate_comment)
-                        result = self.get_tag(tokens)
+                        result = self.get_tag(aggregate_comment)
                         for tag, count in result.iteritems():
                             app_tags[app_id][tag] += count
                     except:
                         aggregate_comment = ''
+                        current_app_id = app_id
                     aggregate_comment = ''
+                    current_app_id = app_id
                     
                 aggregate_comment += (title + content)
         for app, tags in app_tags.iteritems():
@@ -57,20 +56,13 @@ class TagWorker(threading.Thread):
             for tag, times in tags.iteritems():
                 Tag.objects.create(tag=tag, app_id=app, times=times)
 
-    def tokenize(self, text):
-        from nltk.tokenize import RegexpTokenizer
-        tokenizer = RegexpTokenizer('[a-z|A-Z]+')
-        tokens = tokenizer.tokenize(text.lower())
-
-        from nltk.stem.lancaster import LancasterStemmer
-        stemmer = LancasterStemmer()
-
-        return list({stemmer.stem(t) for t in tokens})
-
-    def get_tag(self, tokens, top_n=10):
+    def get_tag(self, content, top_n=1000):
         result = defaultdict(int)
-        for tag, category in nltk.pos_tag(tokens):
+        text = nltk.word_tokenize(content.lower())
+        stemmer = LancasterStemmer()
+        for tag, category in nltk.pos_tag(text):
             if category in ['NN', 'NNP', 'NNS', 'NNPS']:  # http://www.monlp.com/2011/11/08/part-of-speech-tags/
+                # tag = stemmer.stem(tag)
                 result[tag] += 1
         ordered_tags = OrderedDict(sorted(result.items(), key=lambda x: x[1], reverse=True)[:top_n])
         return ordered_tags
@@ -84,6 +76,7 @@ def chunks(l, n):
 if __name__ == '__main__':
     threading_cnt = 1 
     index_list = range(200, 8401, 200)
+    # index_list = [201]
     split_index_list = list(chunks(index_list, len(index_list)/threading_cnt))
     tag_workers = []
     for index_list in split_index_list:

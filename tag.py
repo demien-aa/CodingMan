@@ -69,6 +69,7 @@ class Tag(threading.Thread):
                     aggregate_comment = ''
                     
                 aggregate_comment += (title + content)
+
         for app, tags in app_tags.iteritems():
             sort_app_tags[app] = OrderedDict(sorted(tags.items(), key=lambda x: x[1], reverse=True))
 
