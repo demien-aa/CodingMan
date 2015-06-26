@@ -624,7 +624,7 @@ var tagElems = [],
     gridsAutoLoader,
     tagDataAutoLoader;
 
-function _appendImg(elem, tagData) {
+function _appendImg(elem, imgs) {
     var width = elem.style.width.split('px')[0];
     var height = elem.style.height.split('px')[0];
     var maxColNum = parseInt((width-10)/50);
@@ -633,6 +633,7 @@ function _appendImg(elem, tagData) {
     imgDiv.style.position = 'fixed';
     imgDiv.style.display = 'none';
     var top = -35;
+    var imgIndex = 0;
     for(var i = 0; i < maxRowNum; i++){
         top += 50;
         var left = -30;
@@ -642,19 +643,23 @@ function _appendImg(elem, tagData) {
             left += 50;
             img.style.left = left + 'px';
             img.style.top = top + 'px';
-            if(j%2 === 0)
-                img.src = 'https://static-s.aa-cdn.net/img/ios/284882215/414fb5243cf13d547113e8741d51c3f2';
-            else if (j%3 === 0)
-                img.src = 'https://static-s.aa-cdn.net/img/ios/529479190/785445a28148203e2761939fd365c445';
-            else if (j%5 === 0)
-                img.src = 'https://static-s.aa-cdn.net/img/ios/389801252/80d861160a6231294e4c067430a698e4';
-            else if (j%7 === 0)
-                img.src = 'https://static-s.aa-cdn.net/img/ios/389801252/80d861160a6231294e4c067430a698e4';
-            else if (j%11 === 0)
-                img.src = 'https://static-s.aa-cdn.net/img/ios/389801252/80d861160a6231294e4c067430a698e4';
-            else
-                img.src = 'https://static-s.aa-cdn.net/img/ios/529479190/785445a28148203e2761939fd365c445';
-            img.title = 'Facebook';
+            img.src = imgs[imgIndex].src;
+            img.title = imgs[imgIndex].title;
+            console.log(imgs[imgIndex].src);
+            imgIndex += 1;
+            //if(j%2 === 0)
+            //    img.src = 'https://static-s.aa-cdn.net/img/ios/284882215/414fb5243cf13d547113e8741d51c3f2';
+            //else if (j%3 === 0)
+            //    img.src = 'https://static-s.aa-cdn.net/img/ios/529479190/785445a28148203e2761939fd365c445';
+            //else if (j%5 === 0)
+            //    img.src = 'https://static-s.aa-cdn.net/img/ios/389801252/80d861160a6231294e4c067430a698e4';
+            //else if (j%7 === 0)
+            //    img.src = 'https://static-s.aa-cdn.net/img/ios/389801252/80d861160a6231294e4c067430a698e4';
+            //else if (j%11 === 0)
+            //    img.src = 'https://static-s.aa-cdn.net/img/ios/389801252/80d861160a6231294e4c067430a698e4';
+            //else
+            //    img.src = 'https://static-s.aa-cdn.net/img/ios/529479190/785445a28148203e2761939fd365c445';
+            //img.title = 'Facebook';
             imgDiv.appendChild(img);
         }
     }
@@ -690,7 +695,7 @@ function _appendSmallImgTag(elem,span, tagData, index) {
 }
 
 function _setContent() {
-    var tagData = tagDataAutoLoader.get();
+    var tagDatas = window.tagData;
 
     // 按面积，从大到小排列tag区块
     tagElems.sort(function(a, b) {
@@ -698,14 +703,15 @@ function _setContent() {
     });
 
     tagElems.forEach(function(elem, i) {
+        var tagData = tagDatas[i];
         elem.innerHTML = '';
 
-        _appendImg(elem);
+        _appendImg(elem,tagData['imgs']);
         var title = document.createElement('span');
 
         title.className = 'inner';
-        title.innerHTML = 'test tag'+i;
-        _appendSmallImgTag(elem,title,tagData,i);
+        title.innerHTML = tagData['tagName'];
+        _appendSmallImgTag(elem,title,tagData['imgs'],i);
         elem.appendChild(title);
     });
     console.log("total tag elements num is : "+tagElems.length);
@@ -821,7 +827,7 @@ Array.prototype.forEach.call(buttons, function(button, index) {
 
         currentButton = button;
         currentIndex = index;
-        window.tagData = window[tagDataNames[index]];
+        window.tagData = window.tagDatas[index];
     }
 
     button.onclick = function() {
@@ -831,10 +837,10 @@ Array.prototype.forEach.call(buttons, function(button, index) {
 
 
 function changeNav(button, index) {
-        if(window[tagDataNames[index]]) {
-            window.tagData = window[tagDataNames[index]];
-            tagDataAutoLoader.regenerate();
-        }
+        //if(window[tagDataNames[index]]) {
+        //    window.tagData = window[tagDataNames[index]];
+        //    tagDataAutoLoader.regenerate();
+        //}
 
         indicator.style.left = button.offsetLeft + 'px';
         button.className += ' current';
@@ -857,9 +863,9 @@ gridsAutoLoader = new AutoLoader(function() {
 }, 1000);
 
 // 自动填充下次刷新��?��的Tag数据，以加快用户响应速度
-tagDataAutoLoader = new AutoLoader(function() {
-    return getTagData();
-}, 1000);
+//tagDataAutoLoader = new AutoLoader(function() {
+//    return getTagData();
+//}, 1000);
 
 _initStage(stage, window.tagConfig);
 fillStage(stage);
