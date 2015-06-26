@@ -33,12 +33,16 @@ class TagWorker(threading.Thread):
                     print 'Worker %s: The %s hundred line of file_index %s' % (str(self.worker_cnt), str(index / 100), file_index)
                 index += 1
                 app_id, title, content = line.split('\t')
+
+
+
                 if current_app_id is None:
                     current_app_id = app_id
                 if app_id != current_app_id:
                     current_app_id = app_id
                     try:
-                        result = self.get_tag(aggregate_comment)
+                        tokens = self.tokenize(aggregate_comment)
+                        result = self.get_tag(tokens)
                         for tag, count in result.iteritems():
                             app_tags[app_id][tag] += count
                     except:
@@ -53,10 +57,19 @@ class TagWorker(threading.Thread):
             for tag, times in tags.iteritems():
                 Tag.objects.create(tag=tag, app_id=app, times=times)
 
-    def get_tag(self, content, top_n=10):
+    def tokenize(self, text):
+        from nltk.tokenize import RegexpTokenizer
+        tokenizer = RegexpTokenizer('[a-z|A-Z]+')
+        tokens = tokenizer.tokenize(text.lower())
+
+        from nltk.stem.lancaster import LancasterStemmer
+        stemmer = LancasterStemmer()
+
+        return list({stemmer.stem(t) for t in tokens})
+
+    def get_tag(self, tokens, top_n=10):
         result = defaultdict(int)
-        text = nltk.word_tokenize(content)
-        for tag, category in nltk.pos_tag(text):
+        for tag, category in nltk.pos_tag(tokens):
             if category in ['NN', 'NNP', 'NNS', 'NNPS']:  # http://www.monlp.com/2011/11/08/part-of-speech-tags/
                 result[tag] += 1
         ordered_tags = OrderedDict(sorted(result.items(), key=lambda x: x[1], reverse=True)[:top_n])
