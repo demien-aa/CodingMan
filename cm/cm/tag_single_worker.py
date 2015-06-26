@@ -26,7 +26,8 @@ def single_process():
     aggregate_comment = ''
     index = 0
     review_file_name = '%stop_n_app_reviews' % (MY_ROOT)
-    review_file_name = '%sreviews/top_n_app_tag_201' % (MY_ROOT)
+    # review_file_name = '%sreviews/top_n_app_tag_201' % (MY_ROOT)
+    app_detail = get_app_detail()
     with open(review_file_name) as f:
         for line in f.readlines():
             if index % 100 == 0:
@@ -39,8 +40,10 @@ def single_process():
             if app_id != current_app_id:
                 app_tags = defaultdict(int)
                 try:
-                    create_tag_and_save(aggregate_comment, current_app_id)
+                    detail = app_detail[current_app_id]
+                    create_tag_and_save(aggregate_comment + detail, current_app_id)
                 except Exception as e:
+                    print 'error here!!!!'
                     print e
                 aggregate_comment = ''
                 current_app_id = app_id
@@ -50,9 +53,18 @@ def single_process():
         except Exception as e:
             print e
 
+def get_app_detail():
+    result = defaultdict(str)
+    review_file_name = '%stop_n_app_details' % (MY_ROOT)
+    with open(review_file_name) as f:
+        for line in f.readlines():
+            app_id, app_name, app_description, app_icon, app_rank = line.split('\t')
+            result[app_id] = app_name + app_description
+    return result
+
 def create_tag_and_save(aggregate_comment, app_id):
     app_tags = defaultdict(int)
-    result = get_tag(aggregate_comment)
+    result = get_tag(aggregate_comment.decode('utf-8'))
     for tag, count in result.iteritems():
         app_tags[tag] += count
     for tag, times in app_tags.iteritems():
@@ -61,10 +73,3 @@ def create_tag_and_save(aggregate_comment, app_id):
 
 if __name__ == '__main__':
     single_process()
-    # threading_cnt = 1 
-    # index_list = range(200, 8401, 200)
-    # split_index_list = list(chunks(index_list, len(index_list)/threading_cnt))
-    # tag_workers = []
-    # for index_list in split_index_list:
-    #     tag_workers.append(TagWorker(index_list, split_index_list.index(index_list)))
-    # [tag_worker.start() for tag_worker in tag_workers]
