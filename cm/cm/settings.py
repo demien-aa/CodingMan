@@ -97,27 +97,6 @@ PROJECT_BASE_DIR = os.path.join(BASE_DIR, PROJECT_NAME)
 STATICFILES_JS_DIRS = os.path.join(PROJECT_BASE_DIR, 'js')
 STATICFILES_CSS_DIRS = os.path.join(PROJECT_BASE_DIR, 'css')
 
-<<<<<<< HEAD
-# DATABASES = {
-#     'default': {
-#         'ENGINE': DB_ENGINE,
-#         'NAME': 'cm',
-#         'USER': DB_USER,
-#         'PASSWORD': 'root',
-#         'HOST': DB_HOST,
-#         'PORT': DB_PORT,
-#     },
-#     'default_p': {
-#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#         'NAME': 'cm',
-#         'USER': 'aa',
-#         'PASSWORD': '',
-#         'HOST': '10.11.12.1',
-#         'PORT': '5432',
-#         'OPTIONS': {'autocommit': True},
-#     },
-# }
-=======
 DATABASES = {
     'default': {
         'ENGINE': DB_ENGINE,
@@ -137,4 +116,3 @@ DATABASES = {
     #     'OPTIONS': {'autocommit': True},
     # },
 }
->>>>>>> a5a35d4f748717c60124dcaf218bab052e5df267
