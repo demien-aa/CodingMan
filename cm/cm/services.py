@@ -62,9 +62,9 @@ def calculate_tag_similarity():
 
     import pdb;pdb.set_trace()
     # Insert similarity
-    cursor.execute('Truncate table tag_similarity;')
+    cursor.execute('Truncate table cm_tag_similarity;')
     db.transaction.commit_unless_managed(using='default')
-    insert_sql = 'INSERT INTO tag_similarity (base_tag, tag, similarity) VALUES (%s, %s, %s);'
+    insert_sql = 'INSERT INTO cm_tag_similarity (base_tag, tag, similarity) VALUES (%s, %s, %s);'
     for base, tag, similarity in similarity_data:
         cursor.execute(insert_sql, (base, tag, similarity))
 
@@ -73,21 +73,23 @@ def calculate_tag_similarity():
 
 def get_similar_tags(tag, top=30):
     cursor.execute(
-        "SELECT base_tag, similarity FROM tag_similarity WHERE tag = %s ORDER BY similarity DESC LIMIT %s;", (tag, top))
+        "SELECT base_tag, similarity FROM cm_tag_similarity WHERE tag = %s ORDER BY similarity DESC LIMIT %s;", (tag, top))
     tag_similar_list = [(r[0], r[1]) for r in cursor]
     cursor.execute(
-        "SELECT tag, similarity FROM tag_similarity WHERE base_tag = %s ORDER BY similarity DESC LIMIT %s;", (tag, top))
+        "SELECT tag, similarity FROM cm_tag_similarity WHERE base_tag = %s ORDER BY similarity DESC LIMIT %s;", (tag, top))
     base_tag_similar_list = [(r[0], r[1]) for r in cursor]
     similar_list = sorted(tag_similar_list + base_tag_similar_list, key=lambda e: e[1], reverse=True)
     return similar_list[:top]
 
 
-def get_apps_by_tag(tag, top=60):
-    cursor.execute('SELECT app_id FROM tag_app_rel WHERE tag = %s ORDER BY times DESC LIMIT %s' % (tag, top))
+def get_apps_by_tag(tag, top=5):
+    cursor.execute("SELECT app_id FROM cm_tag WHERE tag = '%s' ORDER BY times DESC LIMIT %s" % (tag[0], top))
     app_ids = [r[0] for r in cursor]
-    cursor.execute(
-        cursor.mogrify('SELECT id, name, icon FROM app WHERE id IN %s', (tuple(app_ids), ))
-    )
+
+    if not app_ids:
+        return []
+    app_id_str = ','.join(map(str, app_ids))
+    cursor.execute('SELECT id, name, icon FROM cm_app WHERE id IN (%s)' % (app_id_str, ))
     apps = []
     for r in cursor:
         apps.append({

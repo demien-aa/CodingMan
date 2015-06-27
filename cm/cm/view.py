@@ -6,7 +6,7 @@ from .services import get_similar_tags, get_apps_by_tag
 
 
 class HomeView(View):
-    TOP_N_TAGS = ['iphone']
+    TOP_N_TAGS = ['warrior']
 
     def get(self, request, *args, **kwargs):
         tag_objs = []
@@ -17,7 +17,7 @@ class HomeView(View):
                 app_objs = get_apps_by_tag(similar_tag)
                 tagObj = {
                     'tagName': similar_tag[0],
-                    'tagMessage': '%s - %s - %s' % (app_objs[0]['title'], app_objs[1]['title'], app_objs[2]['title']),
+                    # 'tagMessage': '%s - %s - %s' % (app_objs[0]['title'], app_objs[1]['title'], app_objs[2]['title']),
                     'imgs': app_objs
                 }
                 similar_tag_objs.append(tagObj)
