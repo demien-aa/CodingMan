@@ -4,8 +4,6 @@ import os
 from django import db
 import re
 
-from nltk.stem.snowball import EnglishStemmer
-
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "settings")
 
 conn = db.connections['default']
@@ -104,7 +102,7 @@ def normalize_tags():
     all_tag_data = defaultdict(dict)
     for r in cursor:
         all_tag_data[r[0]][r[1]] = r[2]
-
+    from nltk.stem.snowball import EnglishStemmer
     stemmer = EnglishStemmer()
     for app_id, tag_to_times in all_tag_data.iteritems():
         normalized_app_tag_dict = defaultdict(int)

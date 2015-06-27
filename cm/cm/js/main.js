@@ -55,12 +55,6 @@
     }
 }());
 
-/**
- *  影子克隆��?��对象
- *
- *  @method _shadowClone
- *  @param {Object} obj 待克隆的对象
- *  @return {Object} 克隆产生的对��? */
 function _shadowClone(obj) {
     var result = {};
 
@@ -99,10 +93,8 @@ AutoLoader.prototype.get = function() {
     clearTimeout(this._loading);
 
     if(this._pool.length > 0) {
-        //console.debug('取自缓存');
         result = this._pool.pop();
     } else {
-        //console.debug('立即生成');
         result = this._generator.apply(this._context);
     }
     this._load();
@@ -674,7 +666,6 @@ function _appendSmallImgTag(elem,span, tagData, index) {
 function _setContent() {
     var datas = window.datas;
 
-    // 按面积，从大到小排列tag区块
     tagElems.sort(function(a, b) {
         return b.order - a.order;
     });
@@ -770,8 +761,7 @@ var stage = document.getElementById('stages'),
     navBar = document.getElementById('nav_bar'),
     indicator = document.getElementById('nav_current'),
     buttons = navBar.getElementsByTagName('a'),
-    currentButton, currentIndex,
-    tagDataNames = window.tagConfig.navConfig.dataNames;
+    currentButton, currentIndex;
 
 
 Array.prototype.forEach.call(buttons, function(button, index) {
@@ -792,11 +782,7 @@ Array.prototype.forEach.call(buttons, function(button, index) {
 
 
 function changeNav(button, index) {
-        //if(window[tagDataNames[index]]) {
-            window.datas = window.tagDatas[index];
-        //    tagDataAutoLoader.regenerate();
-        //}
-
+        window.datas = window.tagDatas[index];
         indicator.style.left = button.offsetLeft + 'px';
         button.className += ' current';
         window.tagConfig.navConfig.currentPos = button.getAttribute('href').split('#')[1];
@@ -812,15 +798,10 @@ function changeNav(button, index) {
         currentButton = button;
         currentIndex = index;
 }
-// 自动填充下次刷新��?��的布��?��格，以加快用户响应�?��?
+
 gridsAutoLoader = new AutoLoader(function() {
     return _getGrids(window.tagConfig);
 }, 1000);
-
-// 自动填充下次刷新��?��的Tag数据，以加快用户响应速度
-//tagDataAutoLoader = new AutoLoader(function() {
-//    return getTagData();
-//}, 1000);
 
 _initStage(stage, window.tagConfig);
 fillStage(stage);
