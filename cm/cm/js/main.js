@@ -608,13 +608,14 @@ function _appendImg(elem, imgs) {
             try {
                 img.src = imgs[imgIndex].src;
                 img.title = imgs[imgIndex].title;
+                img.link = imgs[imgIndex].link;
             } catch (ex) {
                 return;
             }
-            console.log(imgs[imgIndex].src);
+            console.log(img.link);
             imgIndex += 1;
             img.onclick = function() {
-                window.open (imgs[imgIndex].link,imgs[imgIndex].title);
+                window.open (img.link,img.title);
             };
             //if(j%2 === 0)
             //    img.src = 'https://static-s.aa-cdn.net/img/ios/284882215/414fb5243cf13d547113e8741d51c3f2';

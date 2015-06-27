@@ -2,9 +2,10 @@ from collections import defaultdict
 import os
 import pprint
 import re
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "settings")
 from models import Tag_Similarity
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "settings")
+
 
 from django import db
 
@@ -32,13 +33,14 @@ def _do_calculate_tag(base_tag_apps, tag_apps):
     return round(similarity, 5)
 
 
-def get_similar_tags_advance(tag):
-    cursor.execute("SELECT app_id, times FROM cm_tag_15w WHERE tag = '%s' ORDER BY times DESC LIMIT 50;" % tag)
+def get_similar_tags_advance(tag, top_n=30):
+    cursor = conn.cursor()
+    cursor.execute("SELECT app_id, times FROM cm_tag WHERE tag = '%s' ORDER BY times DESC LIMIT 50;" % tag)
     top_app_times = {r[0] : r[1] for r in cursor}
     top_app_ids = top_app_times.keys()
 
     similar_matrix = defaultdict(list)
-    cursor.execute('SELECT app_id, tag, times FROM cm_tag_15w WHERE app_id IN (%s) AND times > 1' % ','.join(map(str, top_app_ids)))
+    cursor.execute('SELECT app_id, tag, times FROM cm_tag WHERE app_id IN (%s) AND times > 1' % ','.join(map(str, top_app_ids)))
     for r in cursor:
         app_id, tag, times = r
         similarity = top_app_times[app_id] + times * 0.75
@@ -47,8 +49,8 @@ def get_similar_tags_advance(tag):
     final_similar_matrix = []
     for tag, similarities in similar_matrix.iteritems():
         final_similar_matrix.append([tag, sum([(1/i) * s[1] for i, s in enumerate(similarities, start=1)])])
-
-    return sorted(final_similar_matrix, key=lambda e: e[1], reverse=True)
+    cursor.close()
+    return sorted(final_similar_matrix, key=lambda e: e[1], reverse=True)[:top_n]
 
 
 def calculate_tag_similarity():
@@ -162,8 +164,8 @@ def normalize_tags():
 
 
 if __name__ == "__main__":
-    # calculate_tag_similarity()
-    # tidy_tags()
+    calculate_tag_similarity()
+    tidy_tags()
     tags = get_similar_tags_advance('gambling')
     print 'dice' in dict(tags)
     print dict(tags)['dice']
