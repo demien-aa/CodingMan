@@ -720,9 +720,9 @@ function fillStage(stage) {
             clearTimeout(window.mouseenterTimer);
             window.currentElem = null;
             var imgDiv = elem.getElementsByTagName('div')[0];
-            slideImg(imgDiv.getElementsByTagName('img'),'top-out');
+            slideImg(imgDiv.getElementsByTagName('img'),'bottom-out');
             var title = elem.getElementsByTagName('span')[0];
-            title.style.webkitAnimationName = 'top-in';
+            title.style.webkitAnimationName = 'bottom-in';
             //setTimeout(function(){
             //    title.style.display = 'block';
             //});
@@ -739,6 +739,27 @@ function slideImg(imgs, animationName) {
             img.style.webkitAnimationName = animationName;
         //}, Math.random() * 400);
     }
+}
+
+function paintedEggs(){
+    tagElems.forEach(function(elem) {
+        var title = elem.getElementsByTagName('span')[0];
+        var imgDiv = elem.getElementsByTagName('div')[0];
+        title.style.webkitAnimationName = 'top-out';
+        imgDiv.style.display = 'block';
+        setInterval(function(){
+            slideImg(imgDiv.getElementsByTagName('img'),'top-in');
+            setInterval(function(){
+                slideImg(imgDiv.getElementsByTagName('img'),'top-out');
+                setInterval(function(){
+                    slideImg(imgDiv.getElementsByTagName('img'),'top-in');
+                    setInterval(function(){
+                        slideImg(imgDiv.getElementsByTagName('img'),'top-out');
+                    },300);
+                },300);
+            },300);
+        },300);
+    });
 }
 
 function refreshStage() {
@@ -849,4 +870,16 @@ document.getElementById('refresh').onclick = function () {
     refreshStage();
 };
 
+document.getElementById('refresh').ondblclick = function () {
+    var that = this;
+    setInterval(function(){
+        setInterval(function(){
 
+            var transform = 'rotate(' + 360 * ++circle_count + 'deg)';
+
+            that.style.transform = transform;
+            that.style.webkitTransform = transform;
+            refreshStage();
+        });
+    });
+};
