@@ -2,46 +2,57 @@ import nltk
 import pprint
 import threading
 import os
+import re
+import sys
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "settings")
 from collections import defaultdict, OrderedDict
 from models import Tag
 from django.conf import settings
 from nltk.stem.lancaster import LancasterStemmer
+from nltk.stem.snowball import EnglishStemmer
 
 MY_ROOT = settings.ROOT + '/../../'
 
 def get_tag(content, top_n=1000):
     result = defaultdict(int)
-    text = nltk.word_tokenize(content.lower())
-    stemmer = LancasterStemmer()
-    for tag, category in nltk.pos_tag(text):
-        if category in ['NN', 'NNP', 'NNS', 'NNPS']:  # http://www.monlp.com/2011/11/08/part-of-speech-tags/
+    clean = re.sub(r"[^a-zA-Z0-9]+"," ",content.lower())
+    text = nltk.word_tokenize(clean)
+    # stemmer = LancasterStemmer()
+    stemmer = EnglishStemmer()
+    material = nltk.pos_tag(text)
+    # http://www.monlp.com/2011/11/08/part-of-speech-tags/
+    for tag, category in material:   
+        # if category in ['NN', 'NNP' 'NNS', 'NNPS']:
+        if category in ['NN', 'NNS']:
             # tag = stemmer.stem(tag)
             result[tag] += 1
     ordered_tags = OrderedDict(sorted(result.items(), key=lambda x: x[1], reverse=True)[:top_n])
     return ordered_tags
 
-def single_process():
+def single_process(file_index):
     current_app_id = None
     aggregate_comment = ''
     index = 0
-    review_file_name = '%stop_n_app_reviews' % (MY_ROOT)
-    # review_file_name = '%sreviews/top_n_app_tag_201' % (MY_ROOT)
+    # real_review_file_name = '%stop_n_app_reviews' % (MY_ROOT)
+    real_review_file_name = '%sreviews_1000/top_n_app_tag_%s' % (MY_ROOT, file_index)
     app_detail = get_app_detail()
-    with open(review_file_name) as f:
+    print real_review_file_name
+    with open(real_review_file_name) as f:
         for line in f.readlines():
-            if index % 100 == 0:
+            if index > 0 and index % 100 == 0:
                 print 'The %s hundred line.' % (str(index / 100))
             index += 1
             app_id, title, content = line.split('\t')
 
             if current_app_id is None:
                 current_app_id = app_id
-            if app_id != current_app_id:
+            if app_id != current_app_id and index > 1:
+                print 'tag app: %s' % current_app_id
                 app_tags = defaultdict(int)
                 try:
                     detail = app_detail[current_app_id]
-                    create_tag_and_save(aggregate_comment + detail, current_app_id)
+                    material = aggregate_comment + detail
+                    create_tag_and_save(material, current_app_id)
                 except Exception as e:
                     print 'error here!!!!'
                     print e
@@ -72,4 +83,4 @@ def create_tag_and_save(aggregate_comment, app_id):
 
 
 if __name__ == '__main__':
-    single_process()
+    single_process(sys.argv[1])
