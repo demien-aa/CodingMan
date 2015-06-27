@@ -35,19 +35,9 @@ CREATE TABLE cm_tag (
 
 
 /**
-tag table
-*/
-CREATE TABLE tag (
-  id INTEGER NOT NULL,
-  name character varying(512) NOT NULL
-);
-
-alter table tag add CONSTRAINT tag_pkey primary key (id);
-
-/**
 tag_similarity table
 */
-CREATE TABLE tag_similarity (
+CREATE TABLE tag_similarity (˙
   base_tag character varying(256) NOT NULL,
   tag character varying(256) NOT NULL,
   similarity FLOAT NOT NULL
