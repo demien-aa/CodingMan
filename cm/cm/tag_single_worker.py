@@ -34,7 +34,7 @@ def single_process(file_index):
     aggregate_comment = ''
     index = 0
     # real_review_file_name = '%stop_n_app_reviews' % (MY_ROOT)
-    real_review_file_name = '%sreviews_2000/top_n_app_tag_%s' % (MY_ROOT, file_index)
+    real_review_file_name = '%sreviews_1000/top_n_app_tag_%s' % (MY_ROOT, file_index)
     app_detail = get_app_detail()
     print real_review_file_name
     with open(real_review_file_name) as f:
