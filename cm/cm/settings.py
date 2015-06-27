@@ -85,11 +85,11 @@ STATIC_URL = '/static/'
 ROOT = os.path.abspath(os.path.dirname(__file__))
 TEMPLATE_DIRS = [os.path.join(ROOT, "templates")]
 
-# DB_HOST = 'localhost'
-# DB_ENGINE = 'django.db.backends.mysql'
-# DB_OPTIONS = {'autocommit': True}
-# DB_USER = 'root'
-# DB_PORT = 3306
+DB_HOST = 'localhost'
+DB_ENGINE = 'django.db.backends.mysql'
+DB_OPTIONS = {'autocommit': True}
+DB_USER = 'root'
+DB_PORT = 3306
 
 DATABASES = {
     'default': {

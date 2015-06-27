@@ -17,3 +17,18 @@ CREATE TABLE `cm_app` (
   `weight` INTEGER,
   PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8;
+
+
+DROP TABLE IF EXISTS `cm_tag_app_rel`;
+CREATE TABLE `cm_tag_app_rel` (
+  `app_id `INTEGER NOT NULL,
+  `tag` character varying(256) NOT NULL,
+  `times` INTEGER NOT NULL
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `cm_tag_similarity`;
+CREATE TABLE `cm_tag_similarity` (
+  `base_tag` character varying(256) NOT NULL,
+  `tag` character varying(256) NOT NULL,
+  `similarity` FLOAT NOT NULL
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8;
