@@ -71,6 +71,32 @@ def calculate_tag_similarity():
     db.transaction.commit_unless_managed(using='default')
 
 
+def get_similar_tags(tag, top=30):
+    cursor.execute(
+        "SELECT base_tag, similarity FROM tag_similarity WHERE tag = %s ORDER BY similarity DESC LIMIT %s;", (tag, top))
+    tag_similar_list = [(r[0], r[1]) for r in cursor]
+    cursor.execute(
+        "SELECT tag, similarity FROM tag_similarity WHERE base_tag = %s ORDER BY similarity DESC LIMIT %s;", (tag, top))
+    base_tag_similar_list = [(r[0], r[1]) for r in cursor]
+    similar_list = sorted(tag_similar_list + base_tag_similar_list, key=lambda e: e[1], reverse=True)
+    return similar_list[:top]
+
+
+def get_apps_by_tag(tag, top=60):
+    cursor.execute('SELECT app_id FROM tag_app_rel WHERE tag = %s ORDER BY times DESC LIMIT %s' % (tag, top))
+    app_ids = [r[0] for r in cursor]
+    cursor.execute(
+        cursor.mogrify('SELECT id, name, icon FROM app WHERE id IN %s', (tuple(app_ids), ))
+    )
+    apps = []
+    for r in cursor:
+        apps.append({
+            'src': r[2],
+            'title': r[1],
+            'link': 'https://www.appannie.com/apps/ios/app/%s/' % r[0]
+        })
+    return apps
+
 def normalize_tags():
     cursor.execute('SELECT app_id, tag, times FROM tag_app_rel;')
     all_tag_data = defaultdict(dict)
