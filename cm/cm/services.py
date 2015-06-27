@@ -82,7 +82,7 @@ def get_similar_tags(tag, top=30):
     return similar_list[:top]
 
 
-def get_apps_by_tag(tag, top=5):
+def get_apps_by_tag(tag, top=60):
     cursor.execute("SELECT app_id FROM cm_tag WHERE tag = '%s' ORDER BY times DESC LIMIT %s" % (tag[0], top))
     app_ids = [r[0] for r in cursor]
 
