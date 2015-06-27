@@ -2,11 +2,11 @@ from django.views.generic import View
 from django.shortcuts import render_to_response
 from django.utils.safestring import mark_safe
 import json
-from .services import get_similar_tags, get_apps_by_tag, get_similar_tags_advance
+from .services import get_similar_tags, get_apps_by_tag
 
 
 class HomeView(View):
-    TOP_N_TAGS = ['gambling', 'sport', 'news', 'car', 'woman']
+    TOP_N_TAGS = ['gambling', 'sport', 'news', 'car', 'woman', 'education']
     TOP_N_TAGS_CLASS = ['news', 'money', 'tech', 'sports', 'auto', 'ent']
 
     def get(self, request, *args, **kwargs):
@@ -18,7 +18,7 @@ class HomeView(View):
         tags += self.TOP_N_TAGS[:6-len(tags)]
         tag_objs = []
         for tag in tags:
-            similar_tags = get_similar_tags_advance(tag)
+            similar_tags = get_similar_tags(tag)
             similar_tag_objs = []
             for similar_tag in similar_tags:
                 app_objs = get_apps_by_tag(similar_tag)

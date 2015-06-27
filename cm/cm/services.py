@@ -32,13 +32,14 @@ def _do_calculate_tag(base_tag_apps, tag_apps):
 
 
 def get_similar_tags_advance(tag, debug=False):
-    cursor.execute("SELECT app_id, times FROM cm_tag_15w WHERE tag = '%s' ORDER BY times DESC LIMIT 50;" % tag)
+    cursor = conn.cursor()
+    cursor.execute("SELECT app_id, times FROM cm_tag WHERE tag = '%s' ORDER BY times DESC LIMIT 50;" % tag)
     top_app_times = {r[0] : (r[1], i) for i, r in enumerate(cursor, start=1)}
     top_app_ids = top_app_times.keys()
 
     debug_matrix = defaultdict(list)
     similar_matrix = defaultdict(list)
-    cursor.execute('SELECT app_id, tag, times FROM cm_tag_15w WHERE app_id IN (%s) AND times > 1' % ','.join(map(str, top_app_ids)))
+    cursor.execute('SELECT app_id, tag, times FROM cm_tag WHERE app_id IN (%s) AND times > 1' % ','.join(map(str, top_app_ids)))
     for r in cursor:
         app_id, similar_tag, times = r
         if similar_tag == tag:
@@ -51,7 +52,7 @@ def get_similar_tags_advance(tag, debug=False):
     final_similar_matrix = []
     for tag, similarities in similar_matrix.iteritems():
         final_similar_matrix.append([tag, sum([(float(1)/top_app_times[s[0]][1]) * s[1] for s in similarities])])
-
+    cursor.close()
     return (sorted(final_similar_matrix, key=lambda e: e[1], reverse=True), debug_matrix)
 
 
@@ -109,8 +110,7 @@ def calculate_tag_similarity():
 
 
 def get_similar_tags(tag, top=30):
-    similar_tags = get_similar_tags_advance(tag)[0]
-    return [t[0] for t in similar_tags][:top]
+    return get_similar_tags_advance(tag)[0]
 
 
 def get_apps_by_tag(tag, top=60):
