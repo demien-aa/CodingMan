@@ -57,6 +57,7 @@ def get_similar_tags_advance(tag, debug=False):
 
 
 def calculate_tag_similarity():
+    cursor = conn.cursor()
     cursor.execute('Truncate table tag_similarity_15w;')
     db.transaction.commit_unless_managed(using='default')
     # Get all tags
@@ -98,7 +99,7 @@ def calculate_tag_similarity():
         for base, tag, similarity in similarity_data:
             cursor.execute(insert_sql, (base, tag, similarity))
         db.transaction.commit_unless_managed(using='default')
-
+    cursor.close()
 
 # def get_similar_tags_django(tag, top=30):
 #     tags = Tag_Similarity.objects.filter(tag=tag).order_by('-similarity')[:top]

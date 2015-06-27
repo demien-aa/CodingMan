@@ -6,7 +6,7 @@ from .services import get_similar_tags, get_apps_by_tag
 
 
 class HomeView(View):
-    TOP_N_TAGS = ['gambling', 'sport', 'news', 'car', 'woman', 'education']
+    TOP_N_TAGS = ['gambling', 'gym', 'sail', 'suv', 'woman', 'productivity']
     TOP_N_TAGS_CLASS = ['news', 'money', 'tech', 'sports', 'auto', 'ent']
 
     def get(self, request, *args, **kwargs):
@@ -15,7 +15,9 @@ class HomeView(View):
             tags = tags_str.split(',')
         else:
             tags = []
-        tags += self.TOP_N_TAGS[:6-len(tags)]
+        if not tags:
+            tags = self.TOP_N_TAGS
+        # tags += self.TOP_N_TAGS[:6-len(tags)]
         tag_objs = []
         for tag in tags:
             similar_tags = get_similar_tags(tag)
