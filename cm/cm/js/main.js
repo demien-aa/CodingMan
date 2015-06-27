@@ -612,10 +612,10 @@ function _appendImg(elem, imgs) {
             } catch (ex) {
                 return;
             }
-            console.log(img.link);
+            console.log(imgs[imgIndex].src);
             imgIndex += 1;
-            img.onclick = function() {
-                window.open (img.link,img.title);
+            img.onclick = function(e) {
+                window.open (e.target.link, e.target.title);
             };
             //if(j%2 === 0)
             //    img.src = 'https://static-s.aa-cdn.net/img/ios/284882215/414fb5243cf13d547113e8741d51c3f2';
@@ -703,20 +703,42 @@ function fillStage(stage) {
         reflowTagElem(elem, grid);
         stage.appendChild(elem);
         tagElems.push(elem);
-        elem.onmouseover = function() {
-            var title = elem.getElementsByTagName('span')[0];
-            title.style.display = 'none';
-            var imgDiv = elem.getElementsByTagName('div')[0];
-            imgDiv.style.display = 'block';
+        elem.onmouseenter = function() {
+            window.mouseenterTimer = setTimeout(function(){
+                var title = elem.getElementsByTagName('span')[0];
+                //title.style.display = 'none';
+                var imgDiv = elem.getElementsByTagName('div')[0];
+                title.style.webkitAnimationName = 'top-out';
+                setTimeout(function(){
+                    imgDiv.style.display = 'block';
+                    slideImg(imgDiv.getElementsByTagName('img'),'top-in');
+                });
+            },200);
+
         }
-        elem.onmouseout = function() {
-            var title = elem.getElementsByTagName('span')[0];
-            title.style.display = 'block';
+        elem.onmouseleave = function() {
+            clearTimeout(window.mouseenterTimer);
+            window.currentElem = null;
             var imgDiv = elem.getElementsByTagName('div')[0];
-            imgDiv.style.display = 'none';
+            slideImg(imgDiv.getElementsByTagName('img'),'top-out');
+            var title = elem.getElementsByTagName('span')[0];
+            title.style.webkitAnimationName = 'top-in';
+            //setTimeout(function(){
+            //    title.style.display = 'block';
+            //});
+            //imgDiv.style.display = 'none';
         }
     });
     _setContent();
+}
+
+function slideImg(imgs, animationName) {
+    for (var i=0; i<imgs.length; i++) {
+        var img = imgs[i];
+        //setTimeout(function() {
+            img.style.webkitAnimationName = animationName;
+        //}, Math.random() * 400);
+    }
 }
 
 function refreshStage() {
