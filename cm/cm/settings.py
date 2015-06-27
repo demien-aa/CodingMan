@@ -85,27 +85,27 @@ STATIC_URL = '/static/'
 ROOT = os.path.abspath(os.path.dirname(__file__))
 TEMPLATE_DIRS = [os.path.join(ROOT, "templates")]
 
-DB_HOST = 'localhost'
-DB_ENGINE = 'django.db.backends.mysql'
-DB_OPTIONS = {'autocommit': True}
-DB_USER = 'root'
-DB_PORT = 3306
+# DB_HOST = 'localhost'
+# DB_ENGINE = 'django.db.backends.mysql'
+# DB_OPTIONS = {'autocommit': True}
+# DB_USER = 'root'
+# DB_PORT = 3306
 
 DATABASES = {
-    'default_m': {
-        'ENGINE': DB_ENGINE,
-        'NAME': 'cm',
-        'USER': DB_USER,
-        'PASSWORD': 'root',
-        'HOST': DB_HOST,
-        'PORT': DB_PORT,
-    },
-    'default_p': {
+    # 'default': {
+    #     'ENGINE': DB_ENGINE,
+    #     'NAME': 'cm',
+    #     'USER': DB_USER,
+    #     'PASSWORD': 'root',
+    #     'HOST': DB_HOST,
+    #     'PORT': DB_PORT,
+    # },
+    'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'cm',
         'USER': 'aa',
         'PASSWORD': '',
-        'HOST': '10.11.12.1',
+        'HOST': '127.0.0.1',
         'PORT': '5432',
         'OPTIONS': {'autocommit': True},
     },

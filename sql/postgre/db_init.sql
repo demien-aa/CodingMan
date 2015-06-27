@@ -18,13 +18,10 @@ alter table app add CONSTRAINT app_pkey primary key (id);
 tag_app_rel table
 */
 CREATE TABLE tag_app_rel (
-  id INTEGER NOT NULL,
   app_id INTEGER NOT NULL,
-  tag_id INTEGER NOT NULL,
+  tag character varying(256) NOT NULL,
   times INTEGER NOT NULL
 );
-
-alter table tag_app_rel add CONSTRAINT tag_app_rel_pkey primary key (id);
 
 
 /**
@@ -51,9 +48,12 @@ alter table tag add CONSTRAINT tag_pkey primary key (id);
 tag_similarity table
 */
 CREATE TABLE tag_similarity (
-  base_tag_id INTEGER NOT NULL,
-  tag_id INTEGER NOT NULL,
-  similarity INTEGER NOT NULL
+  base_tag character varying(256) NOT NULL,
+  tag character varying(256) NOT NULL,
+  similarity FLOAT NOT NULL
 );
+
+ALTER TABLE ONLY tag_similarity
+    ADD CONSTRAINT tag_similarity_tag_uniq UNIQUE (base_tag, tag);
 
 END;
