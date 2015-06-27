@@ -2,72 +2,78 @@
 <html>
 <head>
 <title>App Annie Search By Tag</title>
-<link rel="stylesheet" href="/css/style.css">
 
     <meta http-equiv="Content-Type" content="text/html;charset=GBK"/>
-    <base target="_blank"/><!--[if lte IE 6]> </base> <![endif]-->
-    <link rel="stylesheet" type="text/css" href="http://img1.cache.netease.com/product/tag/2.2/style/index.css" />
+    <link rel="stylesheet" type="text/css" href="/css/style.css" />
 
-    <style type="text/css" id="animation_rules"></style>
+    <style type="text/css" id="animation_rules">
+        @-webkit-keyframes left-out {
+            0% {
+                -webkit-transform: translateX(0);
+            }
+            100% {
+                -webkit-transform: translateX(-1280px);
+            }
+        }
+        @-webkit-keyframes right-in {
+            0% {
+                -webkit-transform: translateX(1280px);
+            }
+            100% {
+                -webkit-transform: translateX(0);
+            }
+        }
+        @-webkit-keyframes right-out {
+            0% {
+                -webkit-transform: translateX(0);
+            }
+            100% {
+                -webkit-transform: translateX(1280px);
+            }
+        }
+        @-webkit-keyframes left-in {
+            0% {
+                -webkit-transform: translateX(-1280px);
+            }
+            100% {
+                -webkit-transform: translateX(0);
+            }
+        }
+        @-webkit-keyframes top-out {
+            0% {
+                -webkit-transform: translateY(0);
+            }
+            100% {
+                -webkit-transform: translateY(640px);
+            }
+        }
+        @-webkit-keyframes top-in {
+            0% {
+                -webkit-transform: translateY(-640px);
+            }
+            100% {
+                -webkit-transform: translateY(0);
+            }
+        }
+    </style>
 </head>
 <body>
 <script type="text/javascript">
 window.tagDatas ={{ tagDatas }};
 </script>
-<script id="animation_template" type="text/x-micro-template">
-    <%
-        var prefix = data.prefix, offset = data.offset;
-    %>
-    @<%=prefix%>keyframes left-out {
-    0% {
-    <%=prefix%>transform: translateX(0);
-    }
-    100% {
-    <%=prefix%>transform: translateX(-<%=offset%>px);
-    }
-    }
-    @<%=prefix%>keyframes right-in {
-    0% {
-    <%=prefix%>transform: translateX(<%=offset%>px);
-    }
-    100% {
-    <%=prefix%>transform: translateX(0);
-    }
-    }
-    @<%=prefix%>keyframes right-out {
-    0% {
-    <%=prefix%>transform: translateX(0);
-    }
-    100% {
-    <%=prefix%>transform: translateX(<%=offset%>px);
-    }
-    }
-    @<%=prefix%>keyframes left-in {
-    0% {
-    <%=prefix%>transform: translateX(-<%=offset%>px);
-    }
-    100% {
-    <%=prefix%>transform: translateX(0);
-    }
-    }
-</script>
 <div class="hd">
-    <a href="http://tag.163.com" target="_self" ></a>
     <span class="refresh-bg"><a target="_self" id="refresh"></a></span>
     <a target="_self" class="vipbtn" id="js-vipbtn" style="display:none;"></a>
     <div id="nav_bar" class="nav-bar">
         <span id="nav_current"><i></i></span>
-        <a target="_self" hidefocus="true" href="#sports" class="news"><i></i><label>Sports</label></a>
-        <a target="_self" hidefocus="true" href="#news" class="money"><i></i><label>News</label></a>
-        <a target="_self" hidefocus="true" href="#game" class="tech"><i></i><label>Game</label></a>
-        <a target="_self" hidefocus="true" href="#money" class="sports"><i></i><label>Money</label></a>
-        <a target="_self" hidefocus="true" href="#auto" class="auto"><i></i><label>Car</label></a>
-        <a target="_self" hidefocus="true" href="#ent" class="ent"><i></i><label>Entertainment</label></a>
+        {% for tag in top_tags %}
+            <a target="_self" hidefocus="true" href="#{{ tag.0 }}" class="{{ tag.1 }}"><i></i><label>{{ tag.0 }}</label></a>
+        {% endfor %}
         <div class="bg"><div class="bg-inner"></div></div>
     </div>
 </div>
 <div class="background">
-    <div id="stage"></div>
+    <div id="stages"></div>
 </div>
 
 <script src="/js/main.js"></script>

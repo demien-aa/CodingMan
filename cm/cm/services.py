@@ -1,10 +1,8 @@
 from collections import defaultdict
-
 import os
 import pprint
 import re
-
-from nltk.stem.snowball import EnglishStemmer
+from models import Tag_Similarity
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "settings")
 
@@ -97,18 +95,29 @@ def calculate_tag_similarity():
         db.transaction.commit_unless_managed(using='default')
 
 
-def get_similar_tags(tag, top=30):
-    cursor.execute(
-        "SELECT base_tag, similarity FROM cm_tag_similarity WHERE tag = %s ORDER BY similarity DESC LIMIT %s;", (tag, top))
-    tag_similar_list = [(r[0], r[1]) for r in cursor]
-    cursor.execute(
-        "SELECT tag, similarity FROM cm_tag_similarity WHERE base_tag = %s ORDER BY similarity DESC LIMIT %s;", (tag, top))
-    base_tag_similar_list = [(r[0], r[1]) for r in cursor]
+def get_similar_tags_django(tag, top=30):
+    tags = Tag_Similarity.objects.filter(tag=tag).order_by('-similarity')[:top]
+    tags_data = [(tag.base_tag, tag.similarity) for tag in tags]
+    reverse_tags = Tag_Similarity.objects.filter(base_tag=tag).order_by('-similarity')[:top]
+    reverse_tags_data = [(tag.tag, tag.similarity) for tag in reverse_tags]
     similar_list = sorted(tag_similar_list + base_tag_similar_list, key=lambda e: e[1], reverse=True)
     return similar_list[:top]
 
 
-def get_apps_by_tag(tag, top=5):
+def get_similar_tags(tag, top=30):
+    cursor = conn.cursor()
+    sql = "SELECT base_tag, similarity FROM cm_tag_similarity WHERE tag = '%s' ORDER BY similarity DESC LIMIT %s;" % (tag, top)
+    cursor.execute(sql)
+    tag_similar_list = [(r[0], r[1]) for r in cursor]
+    cursor.execute("SELECT tag, similarity FROM cm_tag_similarity WHERE base_tag = '%s' ORDER BY similarity DESC LIMIT %s;" % (tag, top))
+    base_tag_similar_list = [(r[0], r[1]) for r in cursor]
+    similar_list = sorted(tag_similar_list + base_tag_similar_list, key=lambda e: e[1], reverse=True)
+    cursor.close()
+    return similar_list[:top]
+
+
+def get_apps_by_tag(tag, top=60):
+    cursor = conn.cursor()
     cursor.execute("SELECT app_id FROM cm_tag WHERE tag = '%s' ORDER BY times DESC LIMIT %s" % (tag[0], top))
     app_ids = [r[0] for r in cursor]
 
@@ -123,6 +132,7 @@ def get_apps_by_tag(tag, top=5):
             'title': r[1],
             'link': 'https://www.appannie.com/apps/ios/app/%s/' % r[0]
         })
+    cursor.close()
     return apps
 
 def tidy_tags():
@@ -135,6 +145,20 @@ def tidy_tags():
     cursor.execute(
         cursor.mogrify('DELETE FROM cm_tag_15w WHERE tag IN %s', (tuple(stop_words_list), ))
     )
+
+def normalize_tags():
+    cursor.execute('SELECT app_id, tag, times FROM tag_app_rel;')
+    all_tag_data = defaultdict(dict)
+    for r in cursor:
+        all_tag_data[r[0]][r[1]] = r[2]
+    from nltk.stem.snowball import EnglishStemmer
+    stemmer = EnglishStemmer()
+    for app_id, tag_to_times in all_tag_data.iteritems():
+        normalized_app_tag_dict = defaultdict(int)
+        for tag, times in tag_to_times.iteritems():
+            normalized_app_tag_dict[stemmer.stem(tag)] += times
+        for tag, times in normalized_app_tag_dict.iteritems():
+            cursor.execute('INSERT INTO tag_app_relation (app_id, tag, times) VALUES (%s, %s, %s)', (app_id, tag, times))
 
 
 if __name__ == "__main__":
