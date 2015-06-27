@@ -72,17 +72,18 @@ def calculate_tag_similarity():
 
 
 def get_similar_tags(tag, top=30):
+    print "SELECT base_tag, similarity FROM cm_tag_similarity WHERE tag = '%s' ORDER BY similarity DESC LIMIT %s;" % (tag, top) 
     cursor.execute(
-        "SELECT base_tag, similarity FROM cm_tag_similarity WHERE tag = %s ORDER BY similarity DESC LIMIT %s;", (tag, top))
+        "SELECT base_tag, similarity FROM cm_tag_similarity WHERE tag = '%s' ORDER BY similarity DESC LIMIT %s;" % (tag, top))
     tag_similar_list = [(r[0], r[1]) for r in cursor]
     cursor.execute(
-        "SELECT tag, similarity FROM cm_tag_similarity WHERE base_tag = %s ORDER BY similarity DESC LIMIT %s;", (tag, top))
+        "SELECT tag, similarity FROM cm_tag_similarity WHERE base_tag = '%s' ORDER BY similarity DESC LIMIT %s;" % (tag, top))
     base_tag_similar_list = [(r[0], r[1]) for r in cursor]
     similar_list = sorted(tag_similar_list + base_tag_similar_list, key=lambda e: e[1], reverse=True)
     return similar_list[:top]
 
 
-def get_apps_by_tag(tag, top=60):
+def get_apps_by_tag(tag, top=5):
     cursor.execute("SELECT app_id FROM cm_tag WHERE tag = '%s' ORDER BY times DESC LIMIT %s" % (tag[0], top))
     app_ids = [r[0] for r in cursor]
 

@@ -69,12 +69,9 @@ window.tagDatas ={{ tagDatas }};
     <a target="_self" class="vipbtn" id="js-vipbtn" style="display:none;"></a>
     <div id="nav_bar" class="nav-bar">
         <span id="nav_current"><i></i></span>
-        <a target="_self" hidefocus="true" href="#sports" class="news"><i></i><label>Sports</label></a>
-        <a target="_self" hidefocus="true" href="#news" class="money"><i></i><label>News</label></a>
-        <a target="_self" hidefocus="true" href="#game" class="tech"><i></i><label>Game</label></a>
-        <a target="_self" hidefocus="true" href="#money" class="sports"><i></i><label>Money</label></a>
-        <a target="_self" hidefocus="true" href="#auto" class="auto"><i></i><label>Car</label></a>
-        <a target="_self" hidefocus="true" href="#ent" class="ent"><i></i><label>Entertainment</label></a>
+        {% for tag in top_tags %}
+            <a target="_self" hidefocus="true" href="#{{ tag.0 }}" class="{{ tag.1 }}"><i></i><label>{{ tag.0 }}</label></a>
+        {% endfor %}
         <div class="bg"><div class="bg-inner"></div></div>
     </div>
 </div>
