@@ -1,36 +1,4 @@
-(function(){
-  var cache = {};
 
-  this.microTemplate = function microTemplate(str, data){
-    // Figure out if we're getting a template, or if we need to
-    // load the template - and be sure to cache the result.
-    var fn = !/\W/.test(str) ?
-      cache[str] = cache[str] ||
-          microTemplate(document.getElementById(str).innerHTML) :
-
-      // Generate a reusable function that will serve as a template
-      // generator (and which will be cached).
-      new Function("data",
-        "var p=[];" +
-
-        // Introduce the data as local variables using with(){}
-        "p.push('" +
-
-        // Convert the template into pure JavaScript
-        str
-          .replace(/[\r\t\n]/g, " ")
-          .split("<%").join("\t")
-          .replace(/((^|%>)[^\t]*)'/g, "$1\r")
-          .replace(/\t=(.*?)%>/g, "',$1,'")
-          .split("\t").join("');")
-          .split("%>").join("p.push('")
-          .split("\r").join("\\'")
-      + "');return p.join('');");
-
-    // Provide some basic currying to the user
-    return data ? fn( data ) : fn;
-  };
-})();
 (function() {
     function range(start, end) {
         var result = [];
@@ -653,6 +621,9 @@ function _appendImg(elem, imgs) {
             }
             console.log(imgs[imgIndex].src);
             imgIndex += 1;
+            img.onclick = function() {
+                window.open (imgs[imgIndex].link,imgs[imgIndex].title);
+            };
             //if(j%2 === 0)
             //    img.src = 'https://static-s.aa-cdn.net/img/ios/284882215/414fb5243cf13d547113e8741d51c3f2';
             //else if (j%3 === 0)
@@ -724,24 +695,7 @@ function _setContent() {
 }
 
 
-var animationTemplate = microTemplate('animation_template'),
-    animationRules = document.getElementById('animation_rules');
-
 function _initStage(stage, config) {
-    try{
-        var offset = stage.clientWidth,
-            rules = '';
-
-        ['-moz-', '-webkit-', '-o-', '-ms-', ''].forEach(function(prefix) {
-            rules += animationTemplate({
-                prefix: prefix,
-                offset: offset
-            });
-        });
-        animationRules.innerHTML = rules;
-    }
-    catch(e) {
-    }
 
     config.pageLayout.width = stage.clientWidth;
     config.pageLayout.height = stage.clientHeight;
@@ -761,7 +715,7 @@ function fillStage(stage) {
             var title = elem.getElementsByTagName('span')[0];
             title.style.display = 'none';
             var imgDiv = elem.getElementsByTagName('div')[0];
-            imgDiv.style.display = 'initial';
+            imgDiv.style.display = 'block';
         }
         elem.onmouseout = function() {
             var title = elem.getElementsByTagName('span')[0];
@@ -798,10 +752,8 @@ function slideStage(offset, callback) {
 
     tagElems.forEach(function(elem) {
         setTimeout(function() {
-            elem.style.animationName = animationOut;
             elem.style.webkitAnimationName = animationOut;
             setTimeout(function(){
-                elem.style.animationName = animationIn;
                 elem.style.webkitAnimationName = animationIn;
             }, 800);
 
@@ -813,19 +765,16 @@ function slideStage(offset, callback) {
     });
 }
 
-var stage = document.getElementById('stage'),
+var stage = document.getElementById('stages'),
     resizeTimer,
-    // 切换导航数据的�?��?
     navBar = document.getElementById('nav_bar'),
     indicator = document.getElementById('nav_current'),
     buttons = navBar.getElementsByTagName('a'),
     currentButton, currentIndex,
-    // 导航数据的变量名
     tagDataNames = window.tagConfig.navConfig.dataNames;
 
 
 Array.prototype.forEach.call(buttons, function(button, index) {
-    // 根据url的hash值，将当前按钮定位到特定的位置上
     if(button.className.indexOf(window.tagConfig.navConfig.currentPos) !== -1) {
         indicator.style.left = button.offsetLeft + 'px';
         indicator.style.display = 'block';

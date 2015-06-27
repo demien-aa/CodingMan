@@ -8,48 +8,60 @@
     <base target="_blank"/><!--[if lte IE 6]> </base> <![endif]-->
     <link rel="stylesheet" type="text/css" href="http://img1.cache.netease.com/product/tag/2.2/style/index.css" />
 
-    <style type="text/css" id="animation_rules"></style>
+    <style type="text/css" id="animation_rules">
+        @-webkit-keyframes left-out {
+            0% {
+                -webkit-transform: translateX(0);
+            }
+            100% {
+                -webkit-transform: translateX(-1280px);
+            }
+        }
+        @-webkit-keyframes right-in {
+            0% {
+                -webkit-transform: translateX(1280px);
+            }
+            100% {
+                -webkit-transform: translateX(0);
+            }
+        }
+        @-webkit-keyframes right-out {
+            0% {
+                -webkit-transform: translateX(0);
+            }
+            100% {
+                -webkit-transform: translateX(1280px);
+            }
+        }
+        @-webkit-keyframes left-in {
+            0% {
+                -webkit-transform: translateX(-1280px);
+            }
+            100% {
+                -webkit-transform: translateX(0);
+            }
+        }
+        @-webkit-keyframes top-out {
+            0% {
+                -webkit-transform: translateY(0);
+            }
+            100% {
+                -webkit-transform: translateY(640px);
+            }
+        }
+        @-webkit-keyframes top-in {
+            0% {
+                -webkit-transform: translateY(-640px);
+            }
+            100% {
+                -webkit-transform: translateY(0);
+            }
+        }
+    </style>
 </head>
 <body>
 <script type="text/javascript">
 window.tagDatas ={{ tagDatas }};
-</script>
-<script id="animation_template" type="text/x-micro-template">
-    <%
-        var prefix = data.prefix, offset = data.offset;
-    %>
-    @<%=prefix%>keyframes left-out {
-    0% {
-    <%=prefix%>transform: translateX(0);
-    }
-    100% {
-    <%=prefix%>transform: translateX(-<%=offset%>px);
-    }
-    }
-    @<%=prefix%>keyframes right-in {
-    0% {
-    <%=prefix%>transform: translateX(<%=offset%>px);
-    }
-    100% {
-    <%=prefix%>transform: translateX(0);
-    }
-    }
-    @<%=prefix%>keyframes right-out {
-    0% {
-    <%=prefix%>transform: translateX(0);
-    }
-    100% {
-    <%=prefix%>transform: translateX(<%=offset%>px);
-    }
-    }
-    @<%=prefix%>keyframes left-in {
-    0% {
-    <%=prefix%>transform: translateX(-<%=offset%>px);
-    }
-    100% {
-    <%=prefix%>transform: translateX(0);
-    }
-    }
 </script>
 <div class="hd">
     <a href="http://tag.163.com" target="_self" ></a>
@@ -67,7 +79,7 @@ window.tagDatas ={{ tagDatas }};
     </div>
 </div>
 <div class="background">
-    <div id="stage"></div>
+    <div id="stages"></div>
 </div>
 
 <script src="/js/main.js"></script>
