@@ -1,7 +1,7 @@
 import os
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "settings")
 from django.conf import settings
-from models import App, Tag_Similarity
+from models import App, Tag_Similarity, Tag
 
 MY_ROOT = settings.ROOT + '/../../'
 
@@ -26,6 +26,18 @@ def import_similarity():
                 print e
                 continue
 
+def import_tag():
+    review_file_name = '%strimed_tag_15w' % (MY_ROOT)
+    with open(review_file_name) as f:
+        for line in f.readlines():
+            app_id, tag, times = line.split('\t')
+            try:
+                Tag.objects.create(tag=tag, app_id=app_id, times=int(times))
+            except Exception as e:
+                print e
+                continue
+
 if __name__ == '__main__':
     # import_detial()
-    import_similarity()
+    # import_similarity()
+    import_tag()

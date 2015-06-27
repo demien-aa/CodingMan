@@ -2,7 +2,7 @@ from django.views.generic import View
 from django.shortcuts import render_to_response
 from django.utils.safestring import mark_safe
 import json
-from .services import get_similar_tags, get_apps_by_tag
+from .services import get_similar_tags, get_apps_by_tag, get_similar_tags_django
 
 
 class HomeView(View):
