@@ -17,6 +17,7 @@ CREATE TABLE `cm_app` (
   `weight` INTEGER,
   PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8;
+<<<<<<< Updated upstream
 
 
 DROP TABLE IF EXISTS `cm_tag_app_rel`;
@@ -32,3 +33,5 @@ CREATE TABLE `cm_tag_similarity` (
   `tag` character varying(256) NOT NULL,
   `similarity` FLOAT NOT NULL
 ) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8;
+=======
+>>>>>>> Stashed changes
