@@ -92,21 +92,21 @@ TEMPLATE_DIRS = [os.path.join(ROOT, "templates")]
 # DB_PORT = 3306
 
 DATABASES = {
-    # 'default': {
-    #     'ENGINE': DB_ENGINE,
-    #     'NAME': 'cm',
-    #     'USER': DB_USER,
-    #     'PASSWORD': 'root',
-    #     'HOST': DB_HOST,
-    #     'PORT': DB_PORT,
-    # },
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'ENGINE': DB_ENGINE,
         'NAME': 'cm',
-        'USER': 'aa',
-        'PASSWORD': '',
-        'HOST': '127.0.0.1',
-        'PORT': '5432',
-        'OPTIONS': {'autocommit': True},
+        'USER': DB_USER,
+        'PASSWORD': 'root',
+        'HOST': DB_HOST,
+        'PORT': DB_PORT,
     },
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.postgresql_psycopg2',
+    #     'NAME': 'cm',
+    #     'USER': 'aa',
+    #     'PASSWORD': '',
+    #     'HOST': '127.0.0.1',
+    #     'PORT': '5432',
+    #     'OPTIONS': {'autocommit': True},
+    # },
 }
