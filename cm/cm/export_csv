@@ -1,0 +1,6 @@
+SELECT app_id,tag,times
+FROM cm_tag 
+INTO OUTFILE '/tmp/tag_15w.csv'
+FIELDS TERMINATED BY '\t'
+ENCLOSED BY '"'
+LINES TERMINATED BY '\n';

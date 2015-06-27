@@ -6,6 +6,8 @@ CREATE TABLE `cm_tag` (
     `tag` varchar(100) NOT NULL COMMENT 'tag',
     PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8;
+create index index_cm_tag_tag on cm_tag (tag);
+create index index_cm_tag_tag_app_id on cm_tag (tag, app_id);
 
 
 DROP TABLE IF EXISTS `cm_app`;
@@ -17,7 +19,7 @@ CREATE TABLE `cm_app` (
   `weight` INTEGER,
   PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8;
-<<<<<<< Updated upstream
+create index index_app_id on cm_app (id); 
 
 
 DROP TABLE IF EXISTS `cm_tag_app_rel`;
@@ -33,5 +35,4 @@ CREATE TABLE `cm_tag_similarity` (
   `tag` character varying(256) NOT NULL,
   `similarity` FLOAT NOT NULL
 ) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8;
-=======
->>>>>>> Stashed changes
+
